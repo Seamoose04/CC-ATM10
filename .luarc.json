@@ -1,6 +1,9 @@
 {
 	"runtime.version": "Lua 5.1",
-	"workspace.library": ["lib/cc-tweaked-stubs/library"],
+	"workspace.library": [
+		"lib/cc-tweaked-stubs/library",
+		"lib/ap-stubs"
+	],
 	"workspace.checkThirdParty": false,
 	"diagnostics.groupSeverity": {
 		"strict": "Warning",
