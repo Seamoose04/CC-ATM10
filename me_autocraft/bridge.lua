@@ -1,4 +1,5 @@
 -- me_autocraft/bridge.lua
+
 ---@type MeBridge
 local meBridge = peripheral.find("me_bridge")
 
@@ -20,13 +21,13 @@ end
 
 ---@param itemName string
 ---@param count number
----@return boolean accepted
+---@return CraftingJob? job
 function bridge.craftItem(itemName, count)
 	local ok, result, err = pcall(meBridge.craftItem, { name = itemName, count = count })
 	if not ok then
-		return false
+		return nil
 	end
-	return result ~= nil
+	return result
 end
 
 ---@param itemName string

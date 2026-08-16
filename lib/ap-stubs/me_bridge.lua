@@ -22,6 +22,7 @@
 ---@field isCraftable boolean Whether a pattern exists for this item.
 
 ---@class CraftingJob
+---@field cpu AE2CraftingCPU? The crafting CPU assigned to this job. Nil for RS Bridge
 local CraftingJob = {}
 ---@return number
 function CraftingJob:getId() end

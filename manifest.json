@@ -1,3 +1,10 @@
 {
-	"me_autocraft": ["me_autocraft/config.lua", "me_autocraft/bridge.lua", "me_autocraft/stock.lua"]
+	"me_autocraft": [
+		"me_autocraft/config.lua",
+		"me_autocraft/bridge.lua",
+		"me_autocraft/stock_loader.lua",
+		"me_autocraft/autocraft.lua",
+		"me_autocraft/stock.txt.example",
+		"common/util.lua"
+	]
 }
