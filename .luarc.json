@@ -1,5 +1,5 @@
 {
-	"runtime.version": "Lua 5.1",
+	"runtime.version": "Lua 5.2",
 	"workspace.library": [
 		"lib/cc-tweaked-stubs/library",
 		"lib/ap-stubs"
