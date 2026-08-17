@@ -21,6 +21,14 @@ local currentJobs = {}
 ---@type table<string, boolean>
 local alreadyWarned = {}
 
+---@class StockSnapshot
+---@field item string
+---@field current integer
+---@field target integer
+---@field crafting boolean
+
+-- TODO: build and publish snapshots
+
 while true do
 	for item, job in pairs(currentJobs) do
 		if job:isDone() then
