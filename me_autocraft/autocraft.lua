@@ -6,6 +6,12 @@ local stockLoader = dofile("me_autocraft/stock_loader.lua")
 ---@type Util
 local util = dofile("common/util.lua")
 
+---@type RednetUtil
+local rednetUtil = dofile("common/rednet.lua")
+
+---@type Protocols
+local protocols = dofile("common/protocols.lua")
+
 ---@type Bridge
 local bridge = dofile("me_autocraft/bridge.lua")
 
@@ -41,6 +47,9 @@ while true do
 	---@type {entry: StockEntry, needed: number, ratio: number}[]
 	local candidates = {}
 
+	---@type StockSnapshot[]
+	local snapshots = {}
+
 	for _, entry in ipairs(requiredStocks) do
 		local stock, craftable = bridge.getItemInfo(entry.item)
 		if craftable then
@@ -60,6 +69,16 @@ while true do
 				end
 			end
 		end
+
+		---@type StockSnapshot
+		local snapshot = {
+			item = entry.item,
+			current = stock,
+			target = entry.target,
+			crafting = currentJobs[entry.item] ~= nil
+		}
+
+		table.insert(snapshots, snapshot)
 	end
 
 	table.sort(candidates, function(a, b)
@@ -81,6 +100,9 @@ while true do
 			end
 		end
 	end
+
+	local packet = protocols.newStockPacket(snapshots)
+	rednetUtil.broadcast(packet)
 
 	sleep(config.POLLING_RATE)
 end
