@@ -6,6 +6,6 @@
 
 ---@type AppConfig
 return {
-	POLLING_RATE = 10,
+	POLLING_RATE = 1,
 	MAX_CONCURRENT_CRAFTS = 2,
 }
