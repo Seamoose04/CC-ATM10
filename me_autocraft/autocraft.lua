@@ -8,6 +8,7 @@ local util = dofile("common/util.lua")
 
 ---@type RednetUtil
 local rednetUtil = dofile("common/rednet.lua")
+rednetUtil.init()
 
 ---@type Protocols
 local protocols = dofile("common/protocols.lua")
@@ -32,8 +33,6 @@ local alreadyWarned = {}
 ---@field current integer
 ---@field target integer
 ---@field crafting boolean
-
--- TODO: build and publish snapshots
 
 while true do
 	for item, job in pairs(currentJobs) do

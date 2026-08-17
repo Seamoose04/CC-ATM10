@@ -119,16 +119,14 @@ local function render(snapshot)
 	end
 end
 
-local function main()
-	if not rednetUtil.init() then
-		error("No modem found")
-	end
+if not rednetUtil.init() then
+	error("No modem found")
+end
 
-	while true do
-		local packet = rednetUtil.receive(protocols.ME_STOCK)
-		if packet then
-			---@cast packet StockPacket
-			render(packet.snapshot)
-		end
+while true do
+	local packet = rednetUtil.receive(protocols.ME_STOCK)
+	if packet then
+		---@cast packet StockPacket
+		render(packet.snapshot)
 	end
 end
