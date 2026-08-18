@@ -41,4 +41,14 @@ function bridge.isItemCrafting(itemName, craftingCpu)
 	return result or false
 end
 
+---@return ItemStack[]
+function bridge.getCraftableItems()
+	local ok, items, err = pcall(meBridge.getCraftableItems, {})
+	if not ok then
+		return {}
+	end
+
+	return items or {}
+end
+
 return bridge
