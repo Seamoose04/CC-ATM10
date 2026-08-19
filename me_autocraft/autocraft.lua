@@ -43,7 +43,7 @@ while true do
 
 	local jobCount = util.tableCount(currentJobs)
 
-	---@type {entry: StockEntry, needed: number, ratio: number}[]
+	---@type { entry: StockEntry, needed: number, ratio: number }[]
 	local candidates = {}
 
 	---@type StockSnapshot[]
