@@ -54,9 +54,9 @@ local function groupByMod(itemNames)
 	---@type table<string, string[]>
 	local itemsByMod = {}
 	for _, name in ipairs(itemNames) do
-		local mod = name:match("^(.-):")
+		local mod, item = name:match("^(.-):(.-)")
 		itemsByMod[mod] = itemsByMod[mod] or {}
-		table.insert(itemsByMod[mod], name)
+		table.insert(itemsByMod[mod], item)
 	end
 
 	return itemsByMod
