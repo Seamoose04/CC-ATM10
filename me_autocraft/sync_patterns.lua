@@ -9,11 +9,12 @@ local bridge = dofile("me_autocraft/bridge.lua")
 ---@type StockLoader
 local stock_loader = dofile("me_autocraft/stock_loader.lua")
 
-local STOCK_FILE = "me_autocraft/stock.txt"
+---@type AppConfig
+local config = dofile("me_autocraft/config.lua")
 
 ---@return table<string, boolean>
 local function getExistingItemNames()
-	local tracked, untracked = stock_loader.loadFile(STOCK_FILE)
+	local tracked, untracked = stock_loader.loadFile(config.STOCK_FILE)
 	local existingNames = {}
 
 	for _, entry in ipairs(tracked) do
@@ -81,13 +82,12 @@ end
 
 ---@param newItemNames string[]
 local function appendUnstockedItems(newItemNames)
-	-- TODO: actually edit file, adding mod section if needed, but preferring to use already existing sections
 	if #newItemNames == 0 then
 		return
 	end
 	local itemsByMod = groupByMod(newItemNames)
 
-	local file = fs.open(STOCK_FILE, "r")
+	local file = fs.open(config.STOCK_FILE, "r")
 
 	---@type string[]
 	local lines = {}
@@ -117,9 +117,9 @@ local function appendUnstockedItems(newItemNames)
 		end
 	end
 
-	file = fs.open(STOCK_FILE, "w")
+	file = fs.open(config.STOCK_FILE, "w")
 	if not file then
-		error("Could not open '" .. STOCK_FILE .. "'")
+		error("Could not open '" .. config.STOCK_FILE .. "'")
 	end
 	for _, line in ipairs(lines) do
 		file.writeLine(line)
