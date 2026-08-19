@@ -5,6 +5,7 @@
 		"me_autocraft/stock_loader.lua",
 		"me_autocraft/autocraft.lua",
 		"me_autocraft/monitor_stock.lua",
+		"me_autocraft/sync_patterns.lua",
 		"me_autocraft/stock.txt.example",
 		"common/util.lua",
 		"common/monitor.lua",
