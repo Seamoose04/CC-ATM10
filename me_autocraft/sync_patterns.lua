@@ -3,6 +3,12 @@
 ---@type Util
 local util = dofile("common/util.lua")
 
+---@type RednetUtil
+local rednetUtil = dofile("common/rednet.lua")
+
+---@type Protocols
+local protocols = dofile("common/protocols.lua")
+
 ---@type Bridge
 local bridge = dofile("me_autocraft/bridge.lua")
 
@@ -127,19 +133,34 @@ local function appendUnstockedItems(newItemNames)
 	file.close()
 end
 
-local craftableItems = bridge.getCraftableItems()
-if not craftableItems then
-	return
-end
-local existingNames = getExistingItemNames()
-local newItems = findNewItems(craftableItems, existingNames)
+---@return string[] newItemNames Items which were added.
+local function runSync()
+	local craftableItems = bridge.getCraftableItems()
+	if #craftableItems == 0 then
+		return {}
+	end
 
-if #newItems == 0 then
-	return
+	local existingNames = getExistingItemNames()
+	local newItems = findNewItems(craftableItems, existingNames)
+
+	if #newItems == 0 then
+		return {}
+	end
+
+	appendUnstockedItems(newItems)
+
+	return newItems
 end
 
-appendUnstockedItems(newItems)
-print(("Added %d new unstocked item(s):"):format(#newItems))
-for _, name in ipairs(newItems) do
-	print("  " .. name)
+rednetUtil.init()
+
+while true do
+	local packet, senderId = rednetUtil.receive(protocols.ME_SYNC)
+	if packet and senderId then
+		---@cast packet MESyncPacket
+
+		local newItems = runSync()
+		local response = protocols.newMESyncCompletePacket(newItems)
+		rednetUtil.send(senderId, response)
+	end
 end
