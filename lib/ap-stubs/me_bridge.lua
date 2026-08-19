@@ -91,3 +91,8 @@ function me_bridge.isCrafting(filter) end
 ---@return CraftingJob? job
 ---@return string? err
 function me_bridge.craftItem(filter) end
+
+---@param filter ItemFilter
+---@return ItemStack[]? result
+---@return string? err
+function me_bridge.getCraftableItems(filter) end

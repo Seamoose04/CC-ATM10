@@ -80,4 +80,24 @@ function util.readFile(path)
 	return contents
 end
 
+---@generic T
+---@param arr T[]
+---@return T[] deduped
+function util.dedupe(arr)
+	---@type table<any, boolean>
+	local seen = {}
+
+	---@type any[]
+	local deduped = {}
+
+	for _, item in ipairs(arr) do
+		if not seen[item] then
+			table.insert(deduped, item)
+			seen[item] = true
+		end
+	end
+
+	return deduped
+end
+
 return util
