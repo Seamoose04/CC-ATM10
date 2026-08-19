@@ -100,7 +100,7 @@ while true do
 		end
 	end
 
-	local packet = protocols.newStockPacket(snapshots)
+	local packet = protocols.newMEStockPacket(snapshots)
 	rednetUtil.broadcast(packet)
 
 	sleep(config.POLLING_RATE)

@@ -126,7 +126,7 @@ end
 while true do
 	local packet = rednetUtil.receive(protocols.ME_STOCK)
 	if packet then
-		---@cast packet StockPacket
+		---@cast packet MEStockPacket
 		render(packet.snapshot)
 	end
 end
