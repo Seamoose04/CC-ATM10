@@ -10,13 +10,15 @@ local bridge = {}
 ---@return number amount
 ---@return boolean isCraftable
 function bridge.getItemInfo(itemName)
-	local ok, result, err = pcall(meBridge.getItem, { name = itemName })
+	local filter = { name = itemName }
 
-	if not ok or not result then
-		return 0, false
-	end
+	local ok, result = pcall(meBridge.getItem, filter)
+	local count = (ok and result and result.count) or 0
 
-	return result.count, result.isCraftable
+	local craftOk, craftable = pcall(meBridge.isCraftable, filter)
+	local isCraftable = (craftOk and craftable) or false
+
+	return count, isCraftable
 end
 
 ---@param itemName string
@@ -39,6 +41,16 @@ function bridge.isItemCrafting(itemName, craftingCpu)
 		return false
 	end
 	return result or false
+end
+
+---@return ItemStack[]
+function bridge.getCraftableItems()
+	local ok, items, err = pcall(meBridge.getCraftableItems, {})
+	if not ok then
+		return {}
+	end
+
+	return items or {}
 end
 
 return bridge

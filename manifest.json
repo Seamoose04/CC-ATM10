@@ -1,10 +1,17 @@
 {
 	"me_autocraft": [
+		"me_autocraft/start.lua",
 		"me_autocraft/config.lua",
 		"me_autocraft/bridge.lua",
 		"me_autocraft/stock_loader.lua",
 		"me_autocraft/autocraft.lua",
+		"me_autocraft/monitor_stock.lua",
+		"me_autocraft/sync_patterns.lua",
+		"me_autocraft/sync_trigger.lua",
 		"me_autocraft/stock.txt.example",
-		"common/util.lua"
+		"common/util.lua",
+		"common/monitor.lua",
+		"common/protocols.lua",
+		"common/rednet.lua"
 	]
 }

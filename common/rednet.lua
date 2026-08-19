@@ -37,8 +37,7 @@ end
 ---@return boolean sent
 function rednetUtil.send(recipientId, packet)
 	assertInitialized()
-	rednet.send(recipientId, packet, packet.protocol)
-	return false
+	return rednet.send(recipientId, packet, packet.protocol)
 end
 
 --- Broadcasts a packet to all listening computers.

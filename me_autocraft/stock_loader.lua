@@ -11,18 +11,22 @@ local stockLoader = {}
 ---@field target number Quantity to keep in stock.
 
 ---@param path string
----@return StockEntry[]
+---@return StockEntry[] tracked Items whose requests are more than 0
+---@return string[] untracked Items whose requests are 0
 function stockLoader.loadFile(path)
 	local raw = util.readFile(path)
 
 	if not raw then
 		print("Warning: '" .. path .. "' is empty")
-		return {}
+		return {}, {}
 	end
 	local currentGroup = nil
 
 	---@type StockEntry[]
-	local entries = {}
+	local tracked = {}
+
+	---@type string[]
+	local untracked = {}
 	for line in raw:gmatch("[^\r\n]+") do
 		local group = line:match("%[(.*)%]")
 		if group then
@@ -36,13 +40,17 @@ function stockLoader.loadFile(path)
 					print("Warning: skipping malformed line in '" .. path .. "': " .. line)
 				else
 					local fullName = currentGroup .. ":" .. key
-					table.insert(entries, { item = fullName, target = tonumber(value) })
+					local target = tonumber(value)
+					if target == 0 then
+						table.insert(untracked, fullName)
+					else
+						table.insert(tracked, { item = fullName, target = target })
+					end
 				end
 			end
 		end
 	end
-
-	return entries
+	return tracked, untracked
 end
 
 return stockLoader
