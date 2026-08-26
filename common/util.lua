@@ -100,4 +100,30 @@ function util.dedupe(arr)
 	return deduped
 end
 
+---@generic T
+---@param arr T[]
+---@param value T
+---@return boolean
+function util.contains(arr, value)
+	for _, v in ipairs(arr) do
+		if v == value then
+			return true
+		end
+	end
+	return false
+end
+
+---@param s string
+---@return boolean?
+function util.toboolean(s)
+	local lowered = s:lower()
+	if lowered == "true" then
+		return true
+	end
+	if lowered == "false" then
+		return false
+	end
+	return nil
+end
+
 return util
