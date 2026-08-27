@@ -34,15 +34,25 @@ local function fetchText(url)
 	return content
 end
 
+---Processes a manifest. string -> table
+---@param raw string
+---@return table manifest
+local function processManifest(raw)
+	local ok, manifest = pcall(textutils.unserialiseJSON, raw)
+	if not ok or type(manifest) ~= "table" then
+		error("Could not parse manifest.")
+	end
+	return manifest
+end
+
 ---Fetches the manifest file, as a table
 ---@return table manifest
 local function fetchManifest()
 	local raw = fetchText(RAW_BASE .. "manifest.json")
-	local ok, manifest = pcall(textutils.unserialiseJSON, raw)
-	if not ok or type(manifest) ~= "table" then
-		error("Could not parse manifest.json from the repo.")
+	if not raw then
+		error(("manifest.json could not be found in repo %q"):format(REPO))
 	end
-	return manifest
+	return processManifest(raw)
 end
 
 -- ----Install logic----
@@ -72,7 +82,7 @@ end
 ---Lists apps available in manifest
 ---@param manifest table Manifest to read from
 ---@return table names # Sorted names of apps from the manifest
-local function listApps(manifest)
+local function listManifest(manifest)
 	local names = {}
 	for name, _ in pairs(manifest) do
 		table.insert(names, name)
@@ -81,23 +91,30 @@ local function listApps(manifest)
 	return names
 end
 
+---Prints manifest apps
+---@param manifest table
+local function printManifestHelp(manifest)
+	local names = listManifest(manifest)
+	if #names == 0 then
+		print("(manifest is currently empty)")
+	else
+		print("Available apps:")
+		for _, name in ipairs(names) do
+			print("  " .. name)
+		end
+	end
+end
+
+
 ---Installs a specific app by name
 ---@param appName string App to download
-local function installApp(appName)
-	local manifest = fetchManifest()
+---@param manifest table The manifest to read from
+local function installApp(appName, manifest)
 	local files = manifest[appName]
 
 	if not files then
 		print("No app named '" .. appName .. "' in manifest.")
-		local names = listApps(manifest)
-		if #names == 0 then
-			print("(manifest is currently empty)")
-		else
-			print("Available apps:")
-			for _, name in ipairs(names) do
-				print("  " .. name)
-			end
-		end
+		printManifestHelp(manifest)
 		return
 	end
 
@@ -113,28 +130,59 @@ local function installApp(appName)
 	print("Done. '" .. appName .. "' installed.")
 end
 
+---@param args string[]
+local function runFullInstaller(args)
+	---@class Util
+	local util = dofile("common/util.lua")
+
+	local appManifest = fetchManifest()
+
+	---@class ArgumentParser
+	local parser = dofile("common/args.lua")
+
+	parser:addArgument("app-name", { required=true, help="The app to install" })
+	parser:addArgument("--autostart", { help="The app's startup script to autorun" })
+	parser:addArgument("--list", { type="boolean", default=false, help="Lists startup scripts if app is provided, otherwise lists apps" })
+	local parsed = parser:parse(args)
+
+	if parsed.app_name then
+		installApp(parsed.app_name, appManifest)
+
+		local autostartManifestRaw = util.readFile("startup.json")
+		if not autostartManifestRaw then
+			error("Could not read 'startup.json'")
+		end
+		local autostartManifest = processManifest(autostartManifestRaw)
+
+		if parsed.autostart then
+			installApp(parsed.autostart, autostartManifest)
+		elseif parsed.list then
+			printManifestHelp(autostartManifest)
+		end
+	elseif parsed.list then
+		printManifestHelp(appManifest)
+	end
+end
+
+---Runs the minimal/initial installer
+---@param args string[]
+local function runLiteInstaller(args)
+	local appName = args[1]
+
+	local manifest = fetchManifest()
+	if appName then
+		installApp(appName, manifest)
+	else
+		print("Usage: install <app_name>")
+		printManifestHelp(manifest)
+	end
+end
+
 -- ----Entry point----
 
 local args = { ... }
-local appName = args[1]
-
-if not appName then
-	print("Usage: install <app_name>")
-	local ok, manifest = pcall(fetchManifest)
-	if ok then
-		local names = listApps(manifest)
-		if #names == 0 then
-			print("(manifest is currently empty)")
-		else
-			print("Available apps:")
-			for _, name in ipairs(names) do
-				print("  " .. name)
-			end
-		end
-	else
-		print("Could not reach manifest to list apps: " .. tostring(manifest))
-	end
-	return
+if fs.exists("common/args.lua") then
+	runFullInstaller(args)
+else
+	runLiteInstaller(args)
 end
-
-installApp(appName)
