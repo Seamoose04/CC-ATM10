@@ -1,15 +1,15 @@
 -- tests/framework.lua
 -- Test framwork for offline, CC-Tweaked, Lua 5.2 testing.
 
----@class TestRunner
-local Runner = {}
+---@class Runner
+local runner = {}
 
 local _passed, _failed = 0, 0
 
 --- Fail the current case unless cond is "true"
 ---@param cond boolean
 ---@param msg string? Message for failure
-function Runner.expect(cond, msg)
+function runner.expect(cond, msg)
 	if not cond then
 		error(msg or "unexpected condition", 3)
 	end
@@ -35,7 +35,7 @@ end
 
 ---@param title string
 ---@param body fun(ctx: TestContext): nil
-function Runner.describe(title, body)
+function runner.describe(title, body)
 	print(("\n%s"):format(title))
 	local ctx = {}
 
@@ -48,14 +48,14 @@ function Runner.describe(title, body)
 	---@param cond boolean
 	---@param msg string?
 	function ctx.expect(cond, msg)
-		Runner.expect(cond, msg)
+		runner.expect(cond, msg)
 	end
 
 	body(ctx)
 end
 
 ---@param label string?
-function Runner.finish(label)
+function runner.finish(label)
 	local total = _passed + _failed
 	print(("\n%s - %d/%d passed (failed: %d)"):format(
 		label or "Summary", _passed, total, _failed
@@ -67,8 +67,8 @@ end
 
 ---@return number passed
 ---@return number failed
-function Runner.stats()
+function runner.stats()
 	return _passed, _failed
 end
 
-return Runner
+return runner
