@@ -1,6 +1,6 @@
 {
 	"me_autocraft": [
-		"main": "me_autocraft/start.lua",
-		"monitor": "me_autocraft/monitor.lua"
+		"main": "rom/autorun/me_autocraft/start.lua",
+		"monitor": "rom/autorun/me_autocraft/monitor.lua"
 	]
 }
