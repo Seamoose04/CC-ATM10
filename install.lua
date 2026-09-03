@@ -138,7 +138,9 @@ local function runFullInstaller(args)
 	local appManifest = fetchManifest()
 
 	---@class ArgumentParser
-	local parser = dofile("common/args.lua")
+	local parser = dofile("common/args.lua").new({
+		prog = fs.getName(shell.getRunningProgram())
+	})
 
 	parser:addArgument("app-name", { required=true, help="The app to install" })
 	parser:addArgument("--autostart", { help="The app's startup script to autorun" })

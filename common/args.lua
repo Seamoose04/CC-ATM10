@@ -26,8 +26,16 @@ ArgumentParser.__index = ArgumentParser
 
 ---@param opts ArgumentParserOpts?
 function ArgumentParser.new(opts)
+	local prog = opts and opts.prog
+	if not prog then
+		if shell then
+			prog = fs.getName(shell.getRunningProgram())
+		else
+			prog = "?"
+		end
+	end
 	local self = {
-		prog = opts and opts.prog or fs.getName(shell.getRunningProgram()),
+		prog = prog,
 		specs = {}
 	}
 	return setmetatable(self, ArgumentParser)
