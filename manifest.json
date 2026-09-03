@@ -1,4 +1,9 @@
 {
+	"installer": [
+		"install.lua",
+		"common/util.lua",
+		"common/args.lua"
+	],
 	"me_autocraft": [
 		"me_autocraft/start.lua",
 		"me_autocraft/config.lua",
