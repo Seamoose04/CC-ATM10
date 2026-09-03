@@ -2,7 +2,8 @@
 	"installer": [
 		"install.lua",
 		"common/util.lua",
-		"common/args.lua"
+		"common/args.lua",
+		"startup.json"
 	],
 	"me_autocraft": [
 		"me_autocraft/start.lua",
